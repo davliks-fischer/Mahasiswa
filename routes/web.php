@@ -18,9 +18,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::prefix('mahasiswa')->middleware(['auth'])->group(function () {
 Route::get('/dashboard', [MahasiswaController::class, 'index'])->name('mahasiswa.dashboard');
 Route::get('/absensi', [MahasiswaController::class, 'viewAbsensi'])->name('mahasiswa.absensi');
-Route::post('/absensi/clock-in', [MahasiswaController::class, 'clockIn']);
-Route::get('/keuangan', [MahasiswaController::class, 'viewKeuangan']);
-Route::get('/mapel', [MahasiswaController::class, 'viewMapel']);
+Route::post('/absensi/clock-in', [MahasiswaController::class, 'clockIn'])->name('mahasiswa.absensi.clockin');
+Route::get('/keuangan', [MahasiswaController::class, 'viewKeuangan'])->name('mahasiswa.keuangan');
+Route::get('/mapel', [MahasiswaController::class, 'viewMapel'])->name('mahasiswa.mapel');
 });
 
 // ==========================================

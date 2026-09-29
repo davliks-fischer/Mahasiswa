@@ -3,88 +3,544 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rekap Absensi - Super Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Rekap Absensi — Super Admin Terminal</title>
     <style>
-        .cyber-grid {
-            background-image: linear-gradient(rgba(16, 185, 129, 0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(16, 185, 129, 0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --cyan: #00f3ff;
+            --green: #39ff14;
+            --orange: #f97316;
+            --bg: #060b14;
+            --bg2: #0b1120;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            background-image:
+                linear-gradient(rgba(0,243,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,243,255,0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            min-height: 100vh;
+            color: #e2e8f0;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00c8d4; }
+
+        /* Animations */
+        @keyframes waveUp {
+            0%   { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.4; transform: scale(0.7); }
+        }
+        @keyframes glow-border {
+            0%, 100% { box-shadow: 0 0 8px rgba(0,243,255,0.3); }
+            50%       { box-shadow: 0 0 20px rgba(0,243,255,0.6); }
+        }
+
+        .wave-1 { animation: waveUp 0.6s ease both; }
+        .wave-2 { animation: waveUp 0.6s ease 0.1s both; }
+        .wave-3 { animation: waveUp 0.6s ease 0.2s both; }
+        .wave-4 { animation: waveUp 0.6s ease 0.3s both; }
+        .wave-5 { animation: waveUp 0.6s ease 0.4s both; }
+
+        /* Navbar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(6,11,20,0.90);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,243,255,0.30);
+            box-shadow: 0 0 20px rgba(0,243,255,0.15);
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .brand-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--cyan);
+            box-shadow: 0 0 8px var(--cyan);
+            animation: pulse-dot 1.8s ease-in-out infinite;
+        }
+        .brand-text {
+            font-size: 0.85rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, var(--cyan), #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-outline-cyan {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 16px;
+            border: 1px solid rgba(0,243,255,0.5);
+            border-radius: 8px;
+            color: var(--cyan);
+            font-family: inherit;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-decoration: none;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-outline-cyan:hover {
+            background: rgba(0,243,255,0.1);
+            box-shadow: 0 0 12px rgba(0,243,255,0.3);
+            border-color: var(--cyan);
+        }
+
+        .btn-logout {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 16px;
+            border: 1px solid rgba(249,115,22,0.5);
+            border-radius: 8px;
+            color: var(--orange);
+            font-family: inherit;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-logout:hover {
+            background: rgba(249,115,22,0.1);
+            box-shadow: 0 0 12px rgba(249,115,22,0.3);
+            border-color: var(--orange);
+        }
+
+        /* Main */
+        .main-wrap {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 4rem;
+        }
+
+        /* Page header */
+        .page-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 14px;
+            border: 1px solid rgba(0,243,255,0.3);
+            border-radius: 999px;
+            background: rgba(0,243,255,0.06);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: var(--cyan);
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+            margin-bottom: 0.4rem;
+        }
+        .page-title span { color: var(--green); }
+
+        .page-desc {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 2rem;
+        }
+
+        /* Stats bar */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg2);
+            border: 1px solid rgba(0,243,255,0.12);
+            border-radius: 14px;
+            padding: 1.25rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .stat-card:hover {
+            border-color: rgba(0,243,255,0.3);
+            box-shadow: 0 0 20px rgba(0,243,255,0.08);
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+            opacity: 0.5;
+        }
+        .stat-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            color: #475569;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+        .stat-value.cyan  { color: var(--cyan); }
+        .stat-value.green { color: var(--green); }
+        .stat-value.red   { color: #f87171; }
+
+        /* Filter badges */
+        .filter-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+        }
+        .filter-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: #475569;
+            text-transform: uppercase;
+            margin-right: 0.25rem;
+        }
+        .filter-btn {
+            padding: 5px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(0,243,255,0.25);
+            background: transparent;
+            color: #64748b;
+            font-family: inherit;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: var(--cyan);
+            color: var(--cyan);
+            background: rgba(0,243,255,0.08);
+            box-shadow: 0 0 10px rgba(0,243,255,0.2);
+        }
+
+        /* Table container */
+        .table-wrap {
+            background: var(--bg2);
+            border: 1px solid rgba(0,243,255,0.15);
+            border-radius: 16px;
+            overflow: hidden;
+            animation: glow-border 3s ease-in-out infinite;
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--bg);
+            border-bottom: 1px solid rgba(0,243,255,0.20);
+        }
+        thead th {
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--cyan);
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            transition: background 0.15s;
+        }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: rgba(0,243,255,0.05); }
+        tbody tr.hidden-row { display: none; }
+
+        td {
+            padding: 14px 18px;
+            font-size: 0.82rem;
+            vertical-align: middle;
+        }
+
+        .td-mono {
+            font-family: 'Courier New', monospace;
+            font-size: 0.78rem;
+            color: #94a3b8;
+        }
+        .td-name {
+            font-weight: 700;
+            color: #fff;
+        }
+        .td-mapel {
+            color: var(--cyan);
+            font-weight: 500;
+        }
+        .td-clockin {
+            font-family: 'Courier New', monospace;
+            font-size: 0.82rem;
+            color: var(--green);
+            font-weight: 600;
+        }
+        .td-clockout {
+            font-family: 'Courier New', monospace;
+            font-size: 0.82rem;
+            color: #475569;
+        }
+        .td-clockout.has-time { color: #94a3b8; }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 0.67rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+        .badge::before {
+            content: '';
+            width: 5px; height: 5px;
+            border-radius: 50%;
+        }
+        .badge-green {
+            background: rgba(57,255,20,0.1);
+            border: 1px solid rgba(57,255,20,0.35);
+            color: var(--green);
+        }
+        .badge-green::before { background: var(--green); }
+        .badge-red {
+            background: rgba(248,113,113,0.1);
+            border: 1px solid rgba(248,113,113,0.35);
+            color: #f87171;
+        }
+        .badge-red::before { background: #f87171; }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        .empty-emoji { font-size: 3rem; margin-bottom: 1rem; }
+        .empty-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 0.35rem;
+        }
+        .empty-sub { font-size: 0.8rem; color: #334155; }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .navbar { padding: 0 1rem; }
+            .main-wrap { padding: 1.5rem 1rem 3rem; }
         }
     </style>
 </head>
-<body class="bg-gray-950 text-white font-sans antialiased min-h-screen cyber-grid">
+<body>
 
-    <!-- NAVBAR -->
-    <nav class="bg-gray-950/80 backdrop-blur-md border-b border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.4)] p-4 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <div class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,1)]"></div>
-                <h1 class="text-xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">
-                    SISTEM REKAP ABSENSI
-                </h1>
-            </div>
-            <a href="/admin/dashboard" class="px-4 py-2 bg-gray-900 border border-emerald-500 text-emerald-400 hover:bg-emerald-500 hover:text-gray-900 rounded transition-all shadow-[0_0_10px_rgba(16,185,129,0.3)] font-bold">
-                &larr; KEMBALI
-            </a>
-        </div>
-    </nav>
-
-    <!-- KONTEN -->
-    <div class="max-w-7xl mx-auto p-6 mt-8">
-        
-        <div class="flex justify-between items-end mb-8">
-            <div>
-                <h2 class="text-3xl font-black text-emerald-300 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]">Log Aktivitas Mahasiswa</h2>
-                <p class="text-emerald-200/60 mt-2">Monitor jam masuk dan pulang dari seluruh fakultas.</p>
-            </div>
-            <button class="px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded shadow-[0_0_15px_rgba(16,185,129,0.6)]">
-                EXPORT DATA CSV
+{{-- ============================================================ NAVBAR --}}
+<nav class="navbar">
+    <a href="{{ route('admin.dashboard') }}" class="navbar-brand">
+        <div class="brand-dot"></div>
+        <span class="brand-text">Super Admin Terminal</span>
+    </a>
+    <div class="navbar-actions">
+        <a href="{{ route('admin.dashboard') }}" class="btn-outline-cyan">
+            ← Kembali
+        </a>
+        <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+            @csrf
+            <button type="submit" class="btn-logout">
+                ⏻ Logout
             </button>
+        </form>
+    </div>
+</nav>
+
+{{-- ============================================================ MAIN --}}
+<main class="main-wrap">
+
+    {{-- Page header --}}
+    <div class="wave-1">
+        <div class="page-badge">📋 Rekap Kehadiran</div>
+        <h1 class="page-title">Rekap <span>Absensi</span></h1>
+        <p class="page-desc">Monitor kehadiran mahasiswa secara real-time dari seluruh sesi perkuliahan.</p>
+    </div>
+
+    {{-- Stats bar --}}
+    @php
+        $totalAbsensi   = $dataAbsensi->count();
+        $hadirCount     = $dataAbsensi->where('status', 'hadir')->count();
+        $belumClockOut  = $dataAbsensi->whereNull('clock_out')->count();
+    @endphp
+
+    <div class="stats-grid wave-2">
+        <div class="stat-card">
+            <div class="stat-label">Total Records</div>
+            <div class="stat-value cyan">{{ $totalAbsensi }}</div>
         </div>
+        <div class="stat-card">
+            <div class="stat-label">Hadir</div>
+            <div class="stat-value green">{{ $hadirCount }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Belum Clock-Out</div>
+            <div class="stat-value red">{{ $belumClockOut }}</div>
+        </div>
+    </div>
 
-        <!-- TABEL DATA -->
-        <div class="bg-gray-900 border border-emerald-600/30 rounded-xl overflow-hidden shadow-[0_0_30px_rgba(16,185,129,0.15)] relative">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500 rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
+    {{-- Filter badges --}}
+    <div class="filter-row wave-3">
+        <span class="filter-label">Filter:</span>
+        <button class="filter-btn active" onclick="filterTable('all', this)">Semua</button>
+        <button class="filter-btn" onclick="filterTable('hadir', this)">Hadir</button>
+        <button class="filter-btn" onclick="filterTable('belum-clockout', this)">Belum Clock-Out</button>
+    </div>
 
-            <div class="overflow-x-auto relative z-10">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-950 border-b border-emerald-800 text-emerald-400 text-sm uppercase">
-                        <tr>
-                            <th class="p-4">Tanggal</th>
-                            <th class="p-4">Nama Mahasiswa</th>
-                            <th class="p-4">Mata Kuliah</th>
-                            <th class="p-4 text-center">Waktu Masuk</th>
-                            <th class="p-4 text-center">Waktu Keluar</th>
-                            <th class="p-4 text-center">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($dataAbsensi as $absen)
-                        <tr class="border-b border-gray-800 hover:bg-emerald-900/20 transition-colors">
-                            <td class="p-4 text-gray-400 font-mono">{{ $absen->tanggal }}</td>
-                            <td class="p-4 text-gray-200 font-bold">{{ $absen->mahasiswa->nama ?? 'Unknown' }}</td>
-                            <td class="p-4 text-emerald-300">{{ $absen->mapel->nama_mapel ?? '-' }}</td>
-                            <td class="p-4 text-center text-cyan-400 font-bold font-mono">{{ $absen->clock_in }}</td>
-                            <td class="p-4 text-center text-purple-400 font-bold font-mono">{{ $absen->clock_out ?? '--:--:--' }}</td>
-                            <td class="p-4 text-center">
-                                @if($absen->status == 'hadir')
-                                    <span class="px-3 py-1 border border-emerald-500 text-emerald-400 bg-emerald-500/10 rounded-full text-xs shadow-[0_0_10px_rgba(16,185,129,0.3)]">HADIR</span>
+    {{-- Table --}}
+    <div class="table-wrap wave-4">
+        <div class="table-scroll">
+            <table id="absensi-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tanggal</th>
+                        <th>Nama Mahasiswa</th>
+                        <th>Mata Kuliah</th>
+                        <th>Clock-In</th>
+                        <th>Clock-Out</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($dataAbsensi as $i => $absen)
+                        @php
+                            $statusNorm = strtolower($absen->status ?? '');
+                            $isHadir    = $statusNorm === 'hadir';
+                            $noClock    = is_null($absen->clock_out);
+                            $rowFilter  = $isHadir ? 'hadir' : 'lainnya';
+                            if ($noClock) $rowFilter .= ' belum-clockout';
+                        @endphp
+                        <tr data-status="{{ $rowFilter }}">
+                            <td class="td-mono">{{ $i + 1 }}</td>
+                            <td class="td-mono">
+                                {{ \Carbon\Carbon::parse($absen->tanggal)->format('d M Y') }}
+                            </td>
+                            <td class="td-name">{{ $absen->mahasiswa->nama ?? '-' }}</td>
+                            <td class="td-mapel">{{ $absen->mapel->nama_mapel ?? '-' }}</td>
+                            <td class="td-clockin">
+                                {{ $absen->clock_in ? \Carbon\Carbon::parse($absen->clock_in)->format('H:i') : '--:--' }}
+                            </td>
+                            <td class="td-clockout {{ $absen->clock_out ? 'has-time' : '' }}">
+                                {{ $absen->clock_out ? \Carbon\Carbon::parse($absen->clock_out)->format('H:i') : '--:--' }}
+                            </td>
+                            <td>
+                                @if ($isHadir)
+                                    <span class="badge badge-green">Hadir</span>
                                 @else
-                                    <span class="px-3 py-1 border border-red-500 text-red-400 bg-red-500/10 rounded-full text-xs shadow-[0_0_10px_rgba(239,68,68,0.3)] uppercase">{{ $absen->status }}</span>
+                                    <span class="badge badge-red">{{ ucfirst($absen->status ?? 'Tidak Hadir') }}</span>
                                 @endif
                             </td>
                         </tr>
-                        @empty
+                    @empty
                         <tr>
-                            <td colspan="6" class="p-8 text-center text-gray-500 font-mono">>> BELUM ADA LOG ABSENSI <<</td>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <div class="empty-emoji">📭</div>
+                                    <div class="empty-title">Belum ada data absensi</div>
+                                    <div class="empty-sub">Data absensi akan muncul di sini setelah mahasiswa melakukan clock-in.</div>
+                                </div>
+                            </td>
                         </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
-
     </div>
+
+</main>
+
+<script>
+    function filterTable(filter, btn) {
+        // Update active button
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const rows = document.querySelectorAll('#absensi-table tbody tr[data-status]');
+        rows.forEach(row => {
+            if (filter === 'all') {
+                row.classList.remove('hidden-row');
+            } else {
+                const status = row.getAttribute('data-status') || '';
+                if (status.includes(filter)) {
+                    row.classList.remove('hidden-row');
+                } else {
+                    row.classList.add('hidden-row');
+                }
+            }
+        });
+    }
+</script>
+
 </body>
 </html>
