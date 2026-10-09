@@ -32,19 +32,19 @@
 
         .anim-wave {
             opacity: 0;
-            animation: waveUpCyberpunk 1.5s forwards;
+            animation: waveUpCyberpunk 3.5s forwards;
         }
 
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.3s; }
-        .delay-3 { animation-delay: 0.5s; }
+        .delay-1 { animation-delay: 0.80s; }
+        .delay-2 { animation-delay: 0.60s; }
+        .delay-3 { animation-delay: 0.55s; }
 
         /* 3. TEMA HIJAU NEON THE MATRIX */
         .theme-matrix {
             background-color: #111827;
             border: 2px solid rgba(57, 255, 20, 0.1);
             border-radius: 1rem;
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: all 0.9s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         .theme-matrix:hover {
@@ -71,11 +71,25 @@
     <!-- NAVBAR HIJAU NEON -->
     <nav class="border-b border-[#39ff14]/40 shadow-[0_0_20px_rgba(57,255,20,0.2)] p-4 sticky top-0 z-50 bg-[#060b14]/90 backdrop-blur-md">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <div class="w-3 h-3 rounded-full animate-pulse" style="background-color: #39ff14; box-shadow: 0 0 15px #39ff14;"></div>
-                <h1 class="text-xl font-black tracking-widest text-transparent bg-clip-text drop-shadow-[0_0_8px_rgba(57,255,20,0.6)]" style="background-image: linear-gradient(to right, #39ff14, #10b981);">
-                    PORTAL DOSEN
-                </h1>
+            <div class="flex items-center space-x-5">
+                <div class="flex items-center space-x-3">
+                    <div class="w-3 h-3 rounded-full animate-pulse" style="background-color: #39ff14; box-shadow: 0 0 15px #39ff14;"></div>
+                    <h1 class="text-xl font-black tracking-widest text-transparent bg-clip-text drop-shadow-[0_0_8px_rgba(57,255,20,0.6)]" style="background-image: linear-gradient(to right, #39ff14, #10b981);">
+                        PORTAL DOSEN
+                    </h1>
+                </div>
+                <!-- Nav Links -->
+                <div class="hidden md:flex items-center space-x-1">
+                    <a href="{{ route('dosen.dashboard') }}"
+                       class="px-3 py-1.5 text-sm rounded font-bold transition-all"
+                       style="color:#39ff14; background: rgba(57,255,20,0.08); border: 1px solid rgba(57,255,20,0.25); text-shadow: 0 0 8px rgba(57,255,20,0.5);">
+                        Dashboard
+                    </a>
+                    <a href="{{ route('dosen.tugas') }}"
+                       class="px-3 py-1.5 text-sm text-gray-400 hover:text-amber-400 rounded transition-colors hover:bg-amber-500/10 font-medium border border-transparent hover:border-amber-500/20">
+                        Upload Tugas
+                    </a>
+                </div>
             </div>
             
             <div class="flex items-center space-x-6">
@@ -154,6 +168,7 @@
                                 <td class="p-5 text-center text-gray-300 font-mono">{{ $mapel->sks }}</td>
                                 <td class="p-5 text-center">
                                     <span class="px-3 py-1 border border-gray-600 bg-gray-800 rounded-full text-xs text-gray-300 uppercase">
+                                    
                                         {{ $mapel->waktu }}
                                     </span>
                                 </td>

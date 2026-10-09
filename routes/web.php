@@ -49,10 +49,15 @@ Route::get('/log-aktivitas', [ActivityLogController::class, 'index'])->name('adm
 // Rute API internal / POST untuk simpan data (Nanti kepake pas lu bikin fungsi nambah data)
 // Route::post('/kelola-mahasiswa/store', [AdminController::class, 'storeMahasiswa'])->name('admin.mahasiswa.store');
 });
-// ==========================================
+// ==========================================  
 // ROLE: DOSEN
 // ==========================================
 Route::prefix('dosen')->middleware(['auth'])->group(function () {
-Route::get('/dashboard', [DosenController::class, 'index'])->name('dosen.dashboard');
-Route::get('/jadwal-ngajar', [DosenController::class, 'jadwal']);
+    Route::get('/dashboard', [DosenController::class, 'index'])->name('dosen.dashboard');
+    Route::get('/jadwal-ngajar', [DosenController::class, 'jadwal']);
+
+    // Halaman & fitur upload tugas
+    Route::get('/tugas', [DosenController::class, 'tugas'])->name('dosen.tugas');
+    Route::post('/tugas/upload', [DosenController::class, 'uploadTugas'])->name('dosen.tugas.upload');
+    Route::delete('/tugas/{id}/hapus', [DosenController::class, 'hapusTugas'])->name('dosen.tugas.hapus');
 });
